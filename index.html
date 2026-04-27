@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>한화첨단소재 생성형 AI 프롬프트 실습 허브</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Outfit:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* 한화 브랜드 컬러 테마 (Hanwha Orange) */
+        --bg: #f9f9f9;
+        --surface: #fff;
+        --surface-hover: #fff8f3;
+        --primary: #F37321; /* Hanwha Orange */
+        --primary-light: #fef1e8;
+        --primary-dark: #d95e0b;
+        --accent: #ff9855; 
+        --accent-light: #fff8f3;
+        --text: #1a202c;
+        --text-secondary: #4a5568;
+        --border: #e2e8f0;
+        --copied-bg: #fef1e8;
+        --copied-border: #F37321;
+        --shadow-sm: 0 1px 3px rgba(243, 115, 33, 0.06);
+        --shadow-md: 0 4px 16px rgba(243, 115, 33, 0.08);
+        --shadow-lg: 0 8px 32px rgba(243, 115, 33, 0.15);
+        --radius: 12px;
+        --radius-lg: 20px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Noto Sans KR", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .header-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .logo img {
+        height: 24px;
+        width: auto;
+      }
+      .hero {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 24px 40px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: var(--accent-light);
+        color: var(--primary-dark);
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        border: 1px solid rgba(243, 115, 33, 0.2);
+      }
+      .hero h1 {
+        font-family: "Outfit", "Noto Sans KR", sans-serif;
+        font-size: clamp(26px, 3.5vw, 40px);
+        font-weight: 900;
+        line-height: 1.35;
+        color: var(--text);
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+      }
+      .hero h1 span {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero p {
+        font-size: 16px;
+        color: var(--text-secondary);
+        max-width: 800px;
+        word-break: keep-all;
+        margin-bottom: 20px;
+      }
+      .hero .resource-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary-dark);
+        background: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s;
+        font-size: 14px;
+      }
+      .hero .resource-link:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .content {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .section-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.3s;
+        margin-bottom: 32px;
+      }
+      .section-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .section-header {
+        padding: 24px 28px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #fdfdfe, var(--surface));
+      }
+      .section-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+      .section-icon.purple { background: #f0e8fd; }
+      .section-icon.blue { background: #e6f0fa; }
+      .section-icon.green { background: #e8f5ec; }
+      .section-icon.orange { background: #fff0ea; }
+      .section-icon.teal { background: #e0f2f1; }
+      
+      .section-header-text h2 {
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .section-header-text p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+      .section-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* Prompt Item */
+      .prompt-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        padding: 18px 60px 18px 18px;
+        background: var(--bg);
+        border: 1.5px solid transparent;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text);
+        user-select: none;
+      }
+      .prompt-item:hover {
+        border-color: var(--border);
+        background: var(--surface-hover);
+        transform: translateX(4px);
+      }
+      .prompt-item.copied {
+        background: var(--copied-bg);
+        border-color: var(--copied-border);
+      }
+      .prompt-text {
+        flex: 1;
+        white-space: pre-wrap;
+      }
+      .prompt-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 30px;
+        padding: 0 8px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 8px;
+        font-family: "Outfit", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-right: 14px;
+        margin-top: 2px;
+      }
+      .copy-indicator {
+        position: absolute;
+        right: 16px;
+        top: 20px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        pointer-events: none;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid var(--border);
+      }
+      .prompt-item:hover .copy-indicator {
+        color: var(--primary);
+        border-color: var(--primary-light);
+      }
+      .prompt-item.copied .copy-indicator {
+        color: var(--primary);
+        background: #fff;
+        border-color: var(--primary);
+      }
+      .copy-indicator svg {
+        width: 18px;
+        height: 18px;
+      }
+      .copy-indicator .check-icon {
+        display: none;
+      }
+      .prompt-item.copied .copy-indicator .copy-icon {
+        display: none;
+      }
+      .prompt-item.copied .copy-indicator .check-icon {
+        display: block;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: #1a202c;
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 100px;
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-inner { height: 56px; }
+        .hero { padding: 32px 16px 24px; }
+        .content { padding: 0 16px 60px; }
+        .section-header { padding: 20px 20px 16px; }
+        .section-body { padding: 14px; }
+        .prompt-item {
+          padding: 16px 48px 16px 14px;
+          font-size: 14px;
+        }
+        .prompt-num {
+          min-width: 28px;
+          height: 26px;
+          font-size: 12px;
+          margin-right: 12px;
+        }
+        .copy-indicator {
+          top: 14px;
+          right: 10px;
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      @keyframes copyPulse {
+        0% { box-shadow: 0 0 0 0 rgba(243, 115, 33, 0.3); }
+        70% { box-shadow: 0 0 0 8px rgba(243, 115, 33, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(243, 115, 33, 0); }
+      }
+      .prompt-item.just-copied {
+        animation: copyPulse 0.6s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <a href="#" class="logo" onclick="return false;">
+          <img src="https://igm.or.kr/data/editor/2604/9f16efdaffbb590c94584a9f4f20787c_1776946230_9941.png" alt="한화 로고" />
+          <span>영업직무 AI 프롬프트 허브</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-badge">AI 기반 글로벌 영업 전략 및 실행 체계 구축 과정</div>
+      <h1>
+        한화첨단소재 영업직무를 위한<br>
+        <span>생성형 AI 실전 프롬프트</span> 모음
+      </h1>
+      <p>
+        글로벌 시장 리서치부터 데이터 분석, 협상 전략, 제안서 작성, 업무 자동화까지. 영업 현장에서 바로 활용할 수 있는 프롬프트 템플릿입니다. 프롬프트를 클릭하면 클립보드에 복사됩니다.
+      </p>
+      <a href="https://cdsa.notion.site/hanwham" target="_blank" class="resource-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        실습자료 노션 바로가기
+      </a>
+    </div>
+
+    <div class="content">
+
+      <!-- M1 -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon purple">🛡️</div>
+          <div class="section-header-text">
+            <h2>M1. Enterprise AI 보안 원칙 & 도구 전략</h2>
+            <p>상황별 최적의 AI 도구 선택 및 데이터 비식별화, 팩트체킹 전략</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="prompt-item" data-num="1" data-prompt="아래 상황에서 어떤 AI 도구(ChatGPT, Gemini, Claude, Copilot, Perplexity)를 써야 가장 효과적인지 추천하고 근거를 알려줘.
+시나리오 1: 글로벌 완성차 OEM(BMW, Stellantis)의 최근 3개월 뉴스 리서치
+시나리오 2: 고객사 계약서 초안의 영문 번역 및 법률 리스크 검토
+시나리오 3: 수주·손익 엑셀 데이터 분석 및 권역별 이익률 보고서 작성
+시나리오 4: 내부 기술자료 기반 사내 챗봇 구축
+시나리오 5: 글로벌 EV 고객 대상 영문 기술 제안 이메일 작성">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="2" data-prompt="이 엑셀데이터가 열려있는 엑셀시트의 A1:I5까지의 데이터다.
+전체 데이터를 아래행으로 더 많이 있다.
+이 데이터구조를 이해해주고 확인바람.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="3" data-prompt="이해한 구조의 데이터에서 추가적인 분석을 위해 파생변수를 만들어
+J1에 복붙할 수 있게 파생변수 컬럼명과 2행에 함수를 바로 J1에
+복붙할 수 있도록 가로형 표를 채팅창에 만들어줘.
+표 셀안에는 함수가 들어가서 바로 복붙하면 작동하도록.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="4" data-prompt="다음은 글로벌 완성차 업체와의 수주계약 데이터 샘플이다.
+컬럼명과 데이터 타입만 유지한 채 아래 원칙대로 비식별화한 가상 데이터
+10건을 만들어줘. 그리고 이 가상 데이터 기반으로 권역별 평균 단가와
+마진율 분석 코드를 Python pandas로 짜줘.
+- 원칙 1: 실제 OEM명 → 알파벳 익명(OEM_A, OEM_B…)
+- 원칙 2: 단가·수량 → ±15% 범위로 노이즈 추가
+- 원칙 3: 담당자·프로젝트코드 → 해시값
+- 원칙 4: 일자 → 분기 단위 라운딩(2025-Q1 등)">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="5" data-prompt="너는 B2B 소재 영업 담당자를 위한 팩트체커다.
+아래 내용에 대해 답변할 때 반드시 다음 규칙을 지켜줘.
+1) 출처 URL을 각 문장 뒤에 (출처: …) 형태로 반드시 표기
+2) 확실치 않은 수치는 '추정치', '보도자료 기준' 등으로 명시
+3) 3년 이상 지난 자료는 &quot;※ 업데이트 필요&quot; 태그를 붙일 것
+4) 서로 다른 소스가 충돌하면 비교표로 정리
+질문: [여기에 리서치 질문 입력]">
+            <span class="prompt-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- M2 -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon blue">🌍</div>
+          <div class="section-header-text">
+            <h2>M2. 글로벌 시장·OEM·소재 동향 심층 분석</h2>
+            <p>완성차 OEM 전략 분석, 경쟁사 비교 및 심층 리서치 보고서 생성</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="prompt-item" data-num="6" data-prompt="너는 자동차 경량소재·복합재 분야의 시니어 시장 애널리스트다.
+다음 주제에 대해 심층 리서치 보고서를 작성해줘.
+
+주제: &quot;2023~2025년 유럽·북미 EV 경량소재(탄소섬유, GFRP,
+       열가소성 복합재) 시장 동향과 주요 완성차 OEM의 채택 전략&quot;
+
+보고서 필수 섹션:
+1) 시장 규모 및 성장률 (CAGR, 2030년 전망 포함)
+2) 주요 OEM의 경량화 로드맵 (BMW, Mercedes, Ford, GM, Stellantis)
+3) 소재별 Tier1 공급사 지형도
+4) 규제 동향 (EU 2035 ICE 금지, CAFE, CBAM 등)
+5) 경쟁사 최신 수주·투자 동향 (최근 12개월)
+6) 당사(한화첨단소재) 관점의 시사점 3가지
+
+출력 규칙:
+- 각 주장마다 출처 URL·발행일 반드시 명시
+- 수치는 '원출처 → 인용처'까지 추적
+- 불확실한 정보는 표시">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="7" data-prompt="5개 AI 도구에서 받은 리서치 보고서를 모두 첨부했다.
+다음 형식으로 교차검증 요약 보고서를 만들어줘.
+1) 5개 보고서가 공통으로 언급한 핵심 트렌드 Top 5
+2) 보고서별로 다르게 해석된 쟁점과 이유
+3) 특정 보고서에만 나온 독특한 관점
+4) 수치가 서로 다른 항목 → 원출처까지 역추적 후 신뢰도 평가
+5) 한화첨단소재 영업팀이 이번 분기에 활용할 수 있는 Action Item 3가지">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="8" data-prompt="업로드한 5개 심층 리서치 보고서(PDF)를 소스로 삼아 다음을 수행해줘.
+Q1. 보고서들이 공통으로 지목한 '2026년 이후 EV 소재 시장의 구조적 변화'
+Q2. Volkswagen / Hyundai / Toyota 3개사의 경량화 전략 비교표
+Q3. 탄소섬유 vs 열가소성 복합재의 가격·성능·양산성 비교
+Q4. 한화첨단소재의 선택적 경쟁우위(Selling Point) 5가지 도출
+Q5. 경영진 보고용 1페이지 Executive Summary 작성 (불릿 10개 이내)
+
+각 답변에 인라인 인용(출처 문서명·페이지) 반드시 표기.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="9" data-prompt="이 url에 위 캡쳐화면과 같은 사이트가 나온다.
+pdf 아이콘 클릭하면 다운로드 받는데 한번에 다운로드 받는 방법.
+(https://finance.naver.com/research/invest_list.naver?&page=1)">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="10" data-prompt="아래 웹페이지에 있는 산업 리서치 보고서 PDF를 일괄 다운로드하는
+Google Colab Python 코드를 짜줘.
+- URL: https://finance.naver.com/research/invest_list.naver
+- 조건 1: 1~5페이지의 모든 PDF 수집
+- 조건 2: 파일명은 '발행일_증권사_제목.pdf' 포맷
+- 조건 3: 다운로드 후 구글드라이브 '리서치/YYYY-MM' 폴더로 이동
+- 조건 4: 중복 파일은 건너뛰기
+- 조건 5: requests + BeautifulSoup 사용, User-Agent 설정">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="11" data-prompt="다음 사이트에서 최근 1년 USD/KRW, EUR/KRW, CNY/KRW 일별 환율 데이터를
+수집해서 엑셀로 저장하는 Python 코드를 짜줘.
+- 출처 1: 다음 환율 (https://finance.daum.net/exchanges)
+- 출처 2: FRED (https://fred.stlouisfed.org/)
+- 결과: 컬럼 = [날짜, USD_KRW, EUR_KRW, CNY_KRW]
+- 월 평균·월말 환율도 별도 시트로 저장
+- 이익률 환산용 Vlookup 지시문도 함께 작성">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="12" data-prompt="너는 한화첨단소재 영업기획팀의 시니어 애널리스트다.
+다음 OEM의 최근 3년 친환경·경량화 이슈 브리핑을 작성해줘.
+대상: [BMW / Mercedes-Benz / Stellantis / Ford / GM 중 택1]
+
+브리핑 섹션:
+1) 전동화 로드맵(모델별 출시 일정·플랫폼)
+2) 경량화 목표 및 소재 전환 현황
+3) 공급망 이슈 (Tier1 재편, 소재 국산화/역외화)
+4) ESG·지속가능성 공시의 핵심 KPI
+5) 최근 Capital Day / CMD에서 언급된 소재 관련 메시지
+6) 한화첨단소재가 접근할 구체적 수주 기회 Top 3
+   (모델·시점·요구 스펙·경쟁사·예상 단가대)
+
+출처: 반드시 IR Deck / 애뉴얼 리포트 / 공식 보도자료 우선 인용">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="13" data-prompt="한화첨단소재의 주요 경쟁사 3곳(예: 토레이, 현대모비스, SGL Carbon)에
+대해 아래 관점에서 비교 분석해줘.
+① 제품 포트폴리오(소재·공법별)
+② 주요 수주 레퍼런스 (최근 3년)
+③ 생산 CAPA 및 글로벌 거점
+④ R&D 방향성 (특허 출원 동향 포함)
+⑤ 가격 포지셔닝
+⑥ 각사 대비 한화첨단소재의 Selling Point (차별화 포인트 5개)
+결과는 비교표 + SWOT + 영업 스크립트 형식으로 정리.">
+            <span class="prompt-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- M3 -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon green">📊</div>
+          <div class="section-header-text">
+            <h2>M3. 매출·수주·이익률 데이터 분석</h2>
+            <p>파생변수 생성 및 수주/손익 데이터를 활용한 경영진 보고용 인사이트 도출</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="prompt-item" data-num="14" data-prompt="캠페인명 채널 국가 노출수 클릭수 CTR 광고비 전환율 신규고객비율 고객만족도
+CMP_0001 검색광고 프랑스 851235 25981 0.0305 177867 0.15 0.129 4.7
+CMP_0002 소셜 베트남 1786576 42910 0.024 192400 0.0745 0.337 4.01
+CMP_0003 디스플레이 인도 664737 7315 0.011 178780 0.0968 0.473 3.58
+이 데이터는 A1부터 J4까지 데이터야.
+전체데이터는 A1부터 J411까지 데이터의 일부분만 보여준거야.
+이해했는지 확인바람.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="15" data-prompt="아래는 한화첨단소재 수주·손익 엑셀의 일부 샘플이다.
+  수주번호 | 고객사 | 권역 | 제품코드 | 소재 | 수량 | 단가(USD) |
+  환율 | 원가(KRW) | 수주일 | 납기 | 담당자
+  HW20250001 | OEM_A | EU | FRP-001 | GFRP | 12000 | 8.5 |
+  1350 | 78000 | 2025-03-12 | 2025-09-30 | 김OO
+  (이하 생략)
+
+이 데이터는 A1부터 L3까지 샘플이고,
+실제 시트는 A1부터 L2003까지야.
+컬럼 구조와 각 필드의 의미를 이해했는지 확인하고,
+&quot;분석 가능한 파생변수 후보 10가지&quot;를 제안해줘.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="16" data-prompt="위 수주·손익 데이터에 다음 파생변수를 자동 계산하는 엑셀 함수와
+Python pandas 코드를 모두 만들어줘.
+1) 매출_KRW = 수량 × 단가(USD) × 환율
+2) 매출이익_KRW = 매출_KRW - 원가
+3) 이익률(%) = 매출이익 / 매출 × 100
+4) 환산기준환율 = 수주일 기준 월평균 환율 VLOOKUP
+5) 이익률 구간: 0~5%=적자성, 5~15%=보통, 15%+=고수익
+엑셀 함수는 J1에 복붙 가능한 가로형 표, Python은 코드블록으로.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="17" data-prompt="첨부한 수주·손익 엑셀을 기반으로 경영진 보고용 보고서 초안을
+작성해줘. 섹션 구조:
+1) Executive Summary (3줄 요약 + KPI 3개)
+2) 소재별 매출·이익률 순위 (Top/Bottom 3)
+3) 권역별 매출 비중 & 이익률 히트맵 해석
+4) 이익률 악화 요인 분석 (환율/원가/단가 중 무엇이 주요인?)
+5) 다음 분기 영업 포커스 제안
+     - 우선 공략 권역
+     - 축소 검토 제품군
+     - 가격 재협상 대상 고객 리스트
+6) 리스크 & 가정사항
+결과는 Word 복붙 가능한 형태로, 각 섹션 끝에 관련 차트 제안.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="18" data-prompt="아래 분석 결과를 경영진 보고용 1페이지로 요약해줘.
+- 대상: CFO, 영업총괄 임원
+- 포맷: A4 1장 (상단 헤드라인 / 중간 핵심 차트 3개 / 하단 Action)
+- 문장 원칙: 한 문장 30자 이내, 숫자는 전년 동기 대비 %p 포함
+- 어조: '~했습니다'가 아닌 '~함' 개조식
+[분석 결과 붙여넣기]">
+            <span class="prompt-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- M4 -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon orange">🤝</div>
+          <div class="section-header-text">
+            <h2>M4. 협상 전략·제안서·글로벌 커뮤니케이션</h2>
+            <p>글로벌 고객사 대상 협상 시나리오 수립, 제안 이메일 작성 및 현지화</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="prompt-item" data-num="19" data-prompt="내가 특정섹터에 대한 산업동향 보고서 5편을 첨부하면,
+그 보고서 5편의 내용을 종합하여 산업섹터 분석보고서를 작성하는
+분석보고서 생성 프롬프트를 작성해줘.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="20" data-prompt="[역할]
+당신은 산업분석 및 투자전략 보고서를 작성하는 시니어 애널리스트입니다.
+단순 요약이 아니라, 여러 보고서를 통합하여 &quot;하나의 관점 있는 산업
+분석 보고서&quot;를 작성해야 합니다.
+
+[입력] 첨부된 산업동향 보고서 5개
+
+[목표]
+5개의 보고서를 종합하여 중복 제거, 관점 통합, 핵심 구조 재정의,
+투자 관점 도출까지 포함된 완성형 산업 분석 보고서를 작성하라.
+
+[분석 프로세스]
+1단계: 핵심 정보 추출
+각 보고서에서 다음 요소만 추출하라
+ - 산업 정의 및 범위
+ - 시장 규모 및 성장률
+ - 주요 플레이어
+ - 밸류체인 구조
+ - 핵심 기술 및 트렌드
+ - 수익 구조 (Revenue Driver)
+ - 리스크 요인
+※ 문장 복붙 금지, 핵심만 구조화
+
+2단계: 공통점 / 차이점 분석
+보고서 5개를 비교하여
+ - 공통적으로 일치하는 핵심 트렌드
+ - 서로 다르게 해석된 부분
+ - 특정 보고서만 강조한 독특한 관점">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="21" data-prompt="내가 '글로벌 EV 고객사 협상 시나리오'를 입력하면,
+그 시나리오에 맞는 협상 대응 스크립트(BATNA·양보 전략·
+반론 대응 5종·마무리 멘트까지)를 생성해주는
+'협상 스크립트 생성 프롬프트'를 메타프롬프트 형식으로 만들어줘.
+그리고 그 메타프롬프트를 실제로 [BMW EV 플랫폼 2027 수주 협상]
+시나리오에 돌려봐서 결과도 보여줘.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="22" data-prompt="너는 한화첨단소재의 시니어 B2B 영업 협상 코치다.
+아래 상황에 대한 협상 대응 스크립트를 작성해줘.
+
+[상황]
+- 고객: 글로벌 EV OEM (OEM_A)
+- 품목: EV 배터리팩 하우징용 GFRP 복합재
+- 수량: 연 50,000대 × 3년
+- 쟁점 1: 고객이 경쟁사 대비 단가 12% 인하 요구
+- 쟁점 2: 2차 공급사(Second Source) 지정을 전제로 함
+- 쟁점 3: 품질 이슈 발생 시 Penalty 조항 강화 요구
+
+[요청]
+1) 당사 BATNA / 고객 BATNA 각각 3가지
+2) 양보 가능 영역과 사수해야 할 레드라인
+3) 단가 방어 논리 5가지 (가치 근거 중심)
+4) 쟁점별 예상 반론과 대응 멘트 (각 3턴)
+5) 교착 상태 돌파용 질문 7종
+6) 마무리 시 Walk-away 멘트와 재오픈 멘트
+출력: 표 + 대화체 스크립트 병행">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="23" data-prompt="다음 조건으로 글로벌 EV OEM 기술 담당자에게 보낼
+제안 이메일 초안을 작성해줘.
+- 수신인: Director of Materials Engineering
+- 제품: 열가소성 복합재(Thermoplastic Composite) 배터리 커버
+- Selling Point: ① 15% 경량화 ② 사출 양산성 ③ 재활용 가능 ④ UL94 V-0
+- 톤: Formal but friendly, 비즈니스 영어, 250 단어 내외
+- 구조: (1) 관심 감사 (2) 3가지 Selling Point (3) 샘플 발송 제안
+         (4) 다음 미팅 제안 (5) CTA
+한국어 번역본도 함께 제공.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="24" data-prompt="위 이메일을 독일어·프랑스어·스페인어 3개 언어로 각각 현지화해줘.
+단, 아래 원칙을 지킬 것.
+1) 단순 기계번역 X, 현지 비즈니스 이메일 관행에 맞게 인사·경어 조정
+2) 단위는 SI 단위로 통일 (kg, %, ℃)
+3) 법률·컴플라이언스 표현(예: GDPR, REACH 준수)은 현지 표준 용어 사용
+4) 독일어는 Sie 존칭, 프랑스어는 vous 존칭 사용
+5) 회신 CTA는 각 국가 업무 시간대 기준으로 제안">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="25" data-prompt="다음 수주 건에 대한 기술 제안서의 목차를 구조화해줘.
+- 고객: [OEM_A]
+- 부품: EV 언더바디 Cross Member (CFRP)
+- 참고 표준 목차: 1.Exec Summary 2.Customer Challenge 3.Our Solution
+  4.Technical Specs 5.Validation 6.Production Readiness
+  7.Commercial 8.Risk Mgmt 9.Timeline 10.Appendix
+각 장마다 하위 3~5개 소제목, 핵심 포함 키워드, 페이지 분량 가이드,
+필요한 내부 자료 출처를 포함.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="26" data-prompt="지금까지 만든 실습파일의 내용을 가지고 어떤 실습을 하게 되는지
+파워포인트 스킬을 이용해서 만들어줘 모노톤으로.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="27" data-prompt="우리 공급망을 표현하는 SVG 도식을 만들어줘.
+노드: Raw Material → Compound → Molding → Assembly → OEM
+각 노드마다 아이콘, 처리 시간, CO2 배출량, 주요 파트너명 표시.
+색상은 모노톤 + 한화 오렌지(#F37321) 포인트. 가로 1280px 기준.
+PPT에 삽입할 수 있도록 단일 SVG 코드로 출력.">
+            <span class="prompt-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- M5 -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon teal">🚀</div>
+          <div class="section-header-text">
+            <h2>M5. 영업 실행 자동화 설계</h2>
+            <p>무역 서류 자동화, 뉴스 수집 및 KPI 대시보드 구축 워크플로우</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="prompt-item" data-num="28" data-prompt="2-4번 수출템플릿을 자동화 계산 로직 반영하여 똑같은 모습의 템플릿
+사이트를 html으로 만들어줘.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="29" data-prompt="현재 수기로 작성하는 CIPL 양식을 브라우저에서 자동 계산되는 단일
+HTML 파일로 만들어줘. 요구사항:
+1) 입력: 제품명, 수량, 단가(USD), 총박스수, Gross/Net Weight, 환율
+2) 자동 계산: Total Amount, Net Weight 합계, CBM, 원화환산액
+3) 출력: 인쇄용 A4 1장 레이아웃 (좌측 Invoice, 우측 Packing List)
+4) 저장: '인쇄 → PDF' 버튼 + CSV 다운로드 버튼
+5) 재사용: 최근 입력값 브라우저 sessionStorage 유지
+6) 교차검증: 수량 × 단가 합계가 Total과 불일치 시 빨간 경고">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="30" data-prompt="선적 정보를 입력하면 표준 B/L 양식이 자동 생성되는 HTML을 만들어줘.
+- 입력 필드: Shipper / Consignee / Notify / Vessel / Voyage /
+  POL / POD / Container No. / Seal No. / Marks / Description /
+  No. of Packages / G.W. / Measurement / Freight
+- 자동 입력: 발행일(오늘), B/L No.(날짜+랜덤 6자리)
+- 인쇄 모드: A4 세로, 회사 로고 자리 placeholder
+- 오탈자 방지: Consignee의 주소·우편번호 유효성 검사">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="31" data-prompt="작성된 CIPL, B/L, 계약서 3개 파일을 비교해서 다음 항목이 모두
+일치하는지 검증하고 불일치 시 리스트업해줘.
+- 제품명·HS Code·수량·단가·총액
+- Shipper/Consignee 회사명·주소
+- Incoterms·결제조건·통화
+- 선적항·도착항·선적예정일
+검증 결과를 표로 만들어주고, 수정 권고 문구까지 첨부.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="32" data-prompt="이리스트에서 경제관련 RSS만 추리고 경제지표관련 내용만 추려서
+최근 일주일 정보만 필터링해서 본문기사내용을 불러오는
+html, css, js코드를 짜줘.
+(리스트: https://github.com/akngs/knews-rss/blob/main/data/feed_specs.csv)">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="33" data-prompt="이리스트에서 경제관련 RSS만 추리고 경제지표관련 내용만 추려서
+최근 일주일 정보만 필터링해서 본문기사내용을 구글시트로 불러오는
+앱스크립트 코드를 짜줘.
+(리스트: https://github.com/akngs/knews-rss/blob/main/data/feed_specs.csv)">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="34" data-prompt="너는 한화첨단소재 영업기획팀 AI 어시스턴트다.
+다음 조건으로 '주간 OEM 동향 브리핑'을 자동 생성하는
+Google Apps Script + Claude API 워크플로우 코드를 짜줘.
+
+조건:
+1) 수집 대상 RSS: BMW Press, Mercedes-Benz News, Stellantis,
+   Ford Media, GM News, Hyundai-Kia
+2) 필터 키워드: EV, battery, lightweight, composite, sustainability,
+   CO2, platform, supplier
+3) 최근 7일 기사만 수집
+4) 각 기사에 대해 Claude API로 다음 요약 생성
+   - 한 줄 핵심 (30자 이내)
+   - 비즈니스 시사점 (한화첨단소재 관점)
+   - 관련 소재 매핑 (GFRP/CFRP/열가소성/샌드위치 중)
+   - 기회/위협 분류
+5) 결과를 구글시트에 자동 저장
+6) 매주 월요일 9시에 이메일로 PDF 요약본 발송
+
+코드 주석에 각 단계별 설명 포함.">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="35" data-prompt="다음 영업 KPI를 매일 자동 업데이트하는 Streamlit 대시보드를
+Claude + Cursor + Streamlit 조합으로 만들어줘.
+- 입력 소스: 수주·손익 엑셀, 활동일지, 환율(FRED)
+- KPI:
+  ① 월 수주액 달성률 (목표 대비)
+  ② 파이프라인 총액·단계별 분포
+  ③ 고객사 Top 10 매출 히트맵
+  ④ 환율 변동 → 이익률 영향
+  ⑤ 담당자별 활동량(방문/통화/이메일)
+- 배포: Streamlit Cloud 무료 배포, 비밀번호 보호">
+            <span class="prompt-text"></span>
+          </div>
+          <div class="prompt-item" data-num="36" data-prompt="내가 매주 반복하는 영업 업무 1가지를 아래 템플릿으로 설명해줄게.
+이걸 바탕으로 ① 자동화 워크플로우 설계도 ② 바이브코딩 스택 추천
+③ 초기 MVP 코드 ④ 1~4주 단계별 실행 플랜 ⑤ 예상 시간 절감량
+을 제안해줘.
+
+[내 업무 설명 템플릿]
+- 업무명:
+- 현재 소요 시간 (주당):
+- 입력 데이터:
+- 현재 처리 방식:
+- 최종 산출물:
+- 반복 빈도:
+- 어려운 부분:">
+            <span class="prompt-text"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="toast" id="toast">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span id="toastText">클립보드에 복사되었습니다!</span>
+    </div>
+
+    <script>
+      // SVG templates for copy indicator
+      var copySvg =
+        '<svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      var checkSvg =
+        '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      // Initialize Prompt Items
+      document.querySelectorAll(".prompt-item").forEach(function (item) {
+        // Create Number Badge from data-num attribute
+        var num = document.createElement("span");
+        num.className = "prompt-num";
+        var promptNo = item.getAttribute("data-num");
+        num.textContent = promptNo ? promptNo : "-";
+        item.insertBefore(num, item.firstChild);
+        
+        // Inject Text Content from data-prompt
+        var textEl = item.querySelector(".prompt-text");
+        if (textEl && item.dataset.prompt) {
+          textEl.textContent = item.dataset.prompt;
+        }
+        
+        // Add Copy Indicator
+        var ci = document.createElement("span");
+        ci.className = "copy-indicator";
+        ci.innerHTML = copySvg + checkSvg;
+        item.appendChild(ci);
+      });
+
+      // Copy Functionality Fallback
+      function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.cssText = "position:fixed;left:-9999px;top:-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      function doCopy(text, cb) {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard
+            .writeText(text)
+            .then(cb)
+            .catch(function () {
+              if (fallbackCopy(text)) cb();
+            });
+        } else {
+          if (fallbackCopy(text)) cb();
+        }
+      }
+
+      // Handle Prompt Click
+      document.addEventListener("click", function (e) {
+        var item = e.target.closest(".prompt-item");
+        if (!item) return;
+        
+        var text = item.getAttribute("data-prompt");
+        if (!text) return;
+        
+        doCopy(text, function () {
+          // Animation & State update
+          item.classList.add("copied");
+          item.classList.remove("just-copied");
+          void item.offsetWidth; // Trigger reflow
+          item.classList.add("just-copied");
+          
+          showToast("클립보드에 복사되었습니다!");
+        });
+      });
+
+      // Toast Notification System
+      var toastTimer;
+      function showToast(msg) {
+        var toast = document.getElementById("toast");
+        document.getElementById("toastText").textContent = msg;
+        toast.classList.add("show");
+        
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.classList.remove("show");
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
